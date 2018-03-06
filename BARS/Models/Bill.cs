@@ -13,5 +13,7 @@ namespace BARS.Models
         public int OrganisationId { get; set; }
         public double BookedAmount { get; set; }
         public double FreeAmount { get { return (Amount-BookedAmount); } }
+
+        public Organisation Organisation { get; set; }
     }
 }

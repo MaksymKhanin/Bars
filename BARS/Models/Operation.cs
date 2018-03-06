@@ -10,11 +10,15 @@ namespace BARS.Models
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public int BillIdFrom { get; set; }
-        public Bill BillFrom { get; set; }
         public int BillIdTo { get; set; }
-        public Bill BillTo { get; set; }
         public int OrganisationIdFrom { get; set; }
         public int OrganisationIdTo { get; set; }
+
+
+        public Bill BillFrom { get; set; }
+        public Bill BillTo { get; set; }
+        public Organisation OrganisationFrom { get; set; }
+        public Organisation OrganisationTo { get; set; }
 
 
     }

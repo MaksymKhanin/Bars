@@ -42,4 +42,76 @@ namespace BARS.Models
             base.Seed(db);
         }
     }
+    interface IRepository<T> : IDisposable
+        where T : class
+    {
+        IEnumerable<T> GetOrganisationsList(); // получение всех объектов
+        T GetOrganisation(int id); // получение одного объекта по id
+        void Create(T item); // создание объекта
+        void Update(T item); // обновление объекта
+        void Delete(int id); // удаление объекта по id
+        void Save();  // сохранение изменений
+    }
+
+    public class ApplicationRepository : IRepository<Organisation>
+    {
+        private OrganisationsContext db;
+
+        public ApplicationRepository()
+        {
+            this.db = new OrganisationsContext();
+        }
+
+        public IEnumerable<Organisation> GetOrganisationsList()
+        {
+            return db.Organisations;
+        }
+
+        public Organisation GetOrganisation(int id)
+        {
+            return db.Organisations.Find(id);
+        }
+
+        public void Create(Organisation organisation)
+        {
+            db.Organisations.Add(organisation);
+        }
+
+        public void Update(Organisation organisation)
+        {
+            db.Entry(organisation).State = EntityState.Modified;
+        }
+
+        public void Delete(int id)
+        {
+            Organisation organisation = db.Organisations.Find(id);
+            if (organisation != null)
+                db.Organisations.Remove(organisation);
+        }
+
+        public void Save()
+        {
+            db.SaveChanges();
+        }
+
+        private bool disposed = false;
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }
