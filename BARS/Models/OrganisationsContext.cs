@@ -14,7 +14,7 @@ namespace BARS.Models
         public OrganisationsContext() : base("LocalDb")
         { }
     }
-    public class OrganisationsDbInitializer : CreateDatabaseIfNotExists<OrganisationsContext>
+    public class OrganisationsDbInitializer : DropCreateDatabaseAlways<OrganisationsContext>
     {
         protected override void Seed(OrganisationsContext db)
         {

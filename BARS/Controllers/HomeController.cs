@@ -22,6 +22,8 @@ namespace BARS.Controllers
         }
         public ActionResult Index()
         {
+            var bills = db2.GetItemsList();
+            ViewBag.Bills = bills;
             return View();
         }
 
