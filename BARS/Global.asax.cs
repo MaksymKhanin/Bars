@@ -6,6 +6,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Data.Entity;
+using BARS.Models;
 
 namespace BARS
 {
@@ -13,6 +15,7 @@ namespace BARS
     {
         protected void Application_Start()
         {
+            Database.SetInitializer(new OrganisationsDbInitializer());
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

@@ -177,6 +177,7 @@
     <Compile Include="Models\Bill.cs" />
     <Compile Include="Models\Operation.cs" />
     <Compile Include="Models\Organisation.cs" />
+    <Compile Include="Models\OrganisationsContext.cs" />
     <Compile Include="Models\OrganisationType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
