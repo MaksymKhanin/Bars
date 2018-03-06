@@ -45,29 +45,30 @@ namespace BARS.Models
     interface IRepository<T> : IDisposable
         where T : class
     {
-        IEnumerable<T> GetOrganisationsList(); // получение всех объектов
-        T GetOrganisation(int id); // получение одного объекта по id
+        IEnumerable<T> GetItemsList(); // получение всех объектов
+        T GetItem(int id); // получение одного объекта по id
         void Create(T item); // создание объекта
         void Update(T item); // обновление объекта
         void Delete(int id); // удаление объекта по id
         void Save();  // сохранение изменений
     }
 
-    public class ApplicationRepository : IRepository<Organisation>
+    #region Organisation repository
+    public class OrganisationRepository : IRepository<Organisation>
     {
         private OrganisationsContext db;
 
-        public ApplicationRepository()
+        public OrganisationRepository()
         {
             this.db = new OrganisationsContext();
         }
 
-        public IEnumerable<Organisation> GetOrganisationsList()
+        public IEnumerable<Organisation> GetItemsList()
         {
             return db.Organisations;
         }
 
-        public Organisation GetOrganisation(int id)
+        public Organisation GetItem(int id)
         {
             return db.Organisations.Find(id);
         }
@@ -114,4 +115,133 @@ namespace BARS.Models
             GC.SuppressFinalize(this);
         }
     }
+    #endregion
+
+    #region Bill repository
+    public class BillRepository : IRepository<Bill>
+    {
+        private OrganisationsContext db;
+
+        public BillRepository()
+        {
+            this.db = new OrganisationsContext();
+        }
+
+        public IEnumerable<Bill> GetItemsList()
+        {
+            return db.Bills;
+        }
+
+        public Bill GetItem(int id)
+        {
+            return db.Bills.Find(id);
+        }
+
+        public void Create(Bill bill)
+        {
+            db.Bills.Add(bill);
+        }
+
+        public void Update(Bill bill)
+        {
+            db.Entry(bill).State = EntityState.Modified;
+        }
+
+        public void Delete(int id)
+        {
+            Bill bill = db.Bills.Find(id);
+            if (bill != null)
+                db.Bills.Remove(bill);
+        }
+
+        public void Save()
+        {
+            db.SaveChanges();
+        }
+
+        private bool disposed = false;
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+    #endregion
+
+    #region Operation repository
+    public class OperationRepository : IRepository<Operation>
+    {
+        private OrganisationsContext db;
+
+        public OperationRepository()
+        {
+            this.db = new OrganisationsContext();
+        }
+
+        public IEnumerable<Operation> GetItemsList()
+        {
+            return db.Operations;
+        }
+
+        public Operation GetItem(int id)
+        {
+            return db.Operations.Find(id);
+        }
+
+        public void Create(Operation operation)
+        {
+            db.Operations.Add(operation);
+        }
+
+        public void Update(Operation operation)
+        {
+            db.Entry(operation).State = EntityState.Modified;
+        }
+
+        public void Delete(int id)
+        {
+            Operation operation = db.Operations.Find(id);
+            if (operation != null)
+                db.Operations.Remove(operation);
+        }
+
+        public void Save()
+        {
+            db.SaveChanges();
+        }
+
+        private bool disposed = false;
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+    #endregion
 }
