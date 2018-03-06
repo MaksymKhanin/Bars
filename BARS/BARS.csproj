@@ -175,8 +175,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Bill.cs" />
+    <Compile Include="Models\BillRepository.cs" />
+    <Compile Include="Models\IRepository.cs" />
     <Compile Include="Models\Operation.cs" />
+    <Compile Include="Models\OperationRepository.cs" />
     <Compile Include="Models\Organisation.cs" />
+    <Compile Include="Models\OrganisationRepository.cs" />
     <Compile Include="Models\OrganisationsContext.cs" />
     <Compile Include="Models\OrganisationType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
