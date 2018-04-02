@@ -1,0 +1,212 @@
+﻿@using BARS.Models
+@model Int32?
+<br>
+
+
+<h2 id="orgName"></h2>
+<br>
+<div id="grid"></div>
+
+
+<script>
+
+    var orgId = '@Model';
+    var count = 1;
+    var dataSource = new kendo.data.DataSource({
+
+        transport: {
+            read: {
+                // the remote service url
+                url: "http://localhost:65424/api/bills/GetBills/" + orgId,
+                // the request type
+                type: "get",
+                // the data type of the returned result
+                dataType: "json",
+                complete: function (data) {
+                    if (data.responseJSON[0]) {
+                        $('#orgName').html('Bills of organisation ' + data.responseJSON[0].OrganisationName);
+                    } else {
+                        $('#orgName').html('No bills');
+                    }
+                }
+            },
+            create: {
+                url: "http://localhost:65424/api/bills/PostBill/",
+                type: "post",
+                dataType: "json",
+                complete: function (e) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                }
+            },
+            update: {
+                url: "http://localhost:65424/api/bills/PutBill/",
+                type: "put",
+                dataType: "json",
+                complete: function (e) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                }
+            },
+            destroy: {
+                url: "http://localhost:65424/api/bills/Delete/",
+                type: "delete",
+                dataType: "json"
+            }
+        },
+        batch: false,
+        // describe the result format
+        schema: {
+            model: {
+                id: "Id",
+                fields: {
+                    Id: { editable: false, nullable: true, type: 'number' },
+                    Name: { editable: true, type: 'string'},
+                    Amount: { editable: true, nullable: true, type: 'number' },
+                    BookedAmount: { editable: false, nullable: true, type: 'number' },
+                    FreeAmount: { editable: false, nullable: true, type: 'number' },
+                }
+            }
+        },
+        pageSize: 9
+    });
+
+    $('#grid').kendoGrid({
+
+        dataSource: dataSource,
+        sortable: true,
+        filterable: {
+            extra: false,
+            operators: {
+                string: {
+                    contains: "Contains"
+                }
+            },
+            cell: {
+                enabled: false
+            }
+
+        },
+        pageable: {
+            pageSizes: true,
+            alwaysVisible: false
+        },
+
+        save: function (e) {
+
+            if (e.model.isNew()) {
+                e.model.OrganisationId = orgId;
+
+            }
+        },
+        width: "700px",
+        toolbar: [
+            { name: "create", text: "Add new bill" }
+        ],
+        columns: [
+            {
+                title: 'Name',
+                field: 'Name'
+
+            },
+            //    sortable: {
+            //        compare: function (a, b, descending) {
+            //            if (a.Name !== b.Name) {
+            //                return a.Name - b.Name;
+            //            }
+
+            //            if (descending) {
+            //                return b.Id - a.Id;
+            //            } else {
+            //                return a.Id - b.Id;
+            //            }
+            //        }
+
+            //},
+            { title: 'Amount', field: 'Amount', format: "{0:c}" },
+            { title: 'BookedAmount', field: 'BookedAmount', format: "{0:c}" },
+            { title: 'FreeAmount', field: 'FreeAmount', format: "{0:c}" },
+            {
+                command: ["edit", /*"destroy",*/ {
+                    name: "book money",
+                    iconClass: "k-icon k-i-track-changes-enable",
+                    click: function (e) {
+                        // prevent page scroll position change
+                        e.preventDefault();
+                        // e.target is the DOM element representing the button
+                        var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                        // get the data bound to the current table row
+                        var data = this.dataItem(tr);
+                        //console.log("Details for: " + data.name);
+
+                        kendo.prompt("Please, enter amount of money you want to book. Existing booking will be changed to the new amount! Available: " +data.Amount+"$").then(function (num) {
+
+
+
+                           
+
+                            if (num > data.Amount) {
+                                
+                                    kendo.alert("Not enough money.");
+                                
+                            }
+                            else {
+
+                                kendo.alert(kendo.format("The value that you entered is '{0}'", num));
+
+                                data.BookedAmount = num;
+
+
+
+                                //var date = new Date();
+                                //var val = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes()+':'+date.getSeconds();
+
+                                var bill = { Id: data.Id, Name: data.Name, Amount: data.Amount, BookedAmount: data.BookedAmount, FreeAmount: data.FreeAmount, OrganisationId: data.OrganisationId };
+                                var operation = { /*Date: new Date(year, month, date[ hours, minutes, seconds]),*/ Action: "booking", Amount: data.BookedAmount, BillFromId: data.Id, BillToId: data.Id };
+                                $.ajax(
+                                    {
+                                        url: "http://localhost:65424/api/bills/PutBill/",
+                                        type: 'PUT',
+                                        contentType: "application/json",
+                                        data: JSON.stringify(bill),
+
+                                        success: function (result) {
+                                            $("#grid").data("kendoGrid").dataSource.read();
+                                        }
+                                    });
+
+                                $.ajax(
+                                    {
+                                        url: "http://localhost:65424/api/operations/PostOperation/",
+                                        type: 'POST',
+                                        contentType: "application/json",
+                                        data: JSON.stringify(operation)
+
+
+                                    });
+
+                            }
+                            
+
+                    }, function() {
+                        kendo.alert("Cancel entering value.");
+                    });
+
+
+                    }
+                },], title: "&nbsp;", width: "300px"
+            }],
+        editable: 'popup',
+        createAt: 'bottom',
+        saveChanges: function (e) {
+            if (!confirm("Are you sure you want to save all changes?")) {
+                e.preventDefault();
+            }
+        },
+    });
+
+
+
+
+
+
+</script>
+

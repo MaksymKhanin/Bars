@@ -1,0 +1,274 @@
+﻿
+<br>
+<h2>Transfer money</h2>
+<br>
+
+<div id="form">
+    <div class="left-block">
+        <ul class="fieldlist">
+            <li>
+                <h3 style="margin-top:50px;">From</h3>
+            </li>
+            <li>
+                <h4><label for="org-input">Organisation</label></h4>
+                <input id="org-input" placeholder="Select organisation..." style="width: 300px;" />
+            </li>
+            <li>
+                <h4><label for="bill-input">Bill</label></h4>
+                <input id="bill-input" placeholder="Select bill..." style="width: 300px;" />
+            </li>
+            <li>
+                <h4><label for="amount">Amount of money</label></h4>
+                <input id="amount" type="number" title="amount" value="0" min="0" style="width: 300px" />
+            </li>
+        </ul>
+    </div>
+    <div class="right-block">
+        <ul class="fieldlist">
+            <li>
+                <h3 style="margin-top:50px;">To</h3>
+            </li>
+            <li>
+                <h4><label for="org-input2">Organisation</label></h4>
+                <input id="org-input2" style="width: 300px;" />
+            </li>
+            <li>
+                <h4><label for="bill-input2">Bill</label></h4>
+                <input id="bill-input2" style="width: 300px;" />
+            </li>
+
+            <li>
+                <button id="send" class="k-button k-primary" style="margin-top:50px; width:150px;">Send</button>
+            </li>
+        </ul>
+    </div>
+</div>
+<style>
+    #form {
+        margin: 0 auto;
+        border: 0.5px solid grey;
+    }
+
+    .left-block {
+        display: inline-block;
+        float: left;
+        width: 50%;
+        margin-bottom: 150px;
+    }
+
+    .right-block {
+        display: inline-block;
+        float: right;
+        width: 50%;
+        margin-bottom: 150px;
+    }
+
+    .fieldlist {
+        padding: 0;
+    }
+
+        .fieldlist li {
+            list-style: none;
+            padding-bottom: 1em;
+        }
+
+        .fieldlist label {
+            display: block;
+            padding-bottom: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: #444;
+        }
+
+    @@media (max-width: 768px) {
+        .left-block {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .right-block {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        var orgId;
+        var orgId2;
+        var url = '';
+        var url2 = '';
+        var billId;
+        var billId2;
+        var amount;
+        var freeAmountFrom;
+        var freeAmountTo;
+
+        $("#org-input").kendoComboBox({
+            placeholder: "Select organisation...",
+            dataTextField: "Name",
+            dataValueField: "Id",
+            filter: "contains",
+            autoBind: false,
+            enable: true,
+            change: onChangeOrg,
+            dataSource: {
+                type: "GET",
+                transport: {
+                    read: {
+                        url: "http://localhost:65424/api/organisations/GetOrganisations/",
+                    }
+                }
+            }
+        });
+        function onChangeOrg(e) {
+            var billCmb = $("#bill-input").data("kendoComboBox");
+            billCmb.enable(true);
+            orgId = this.value();
+            url = 'http://localhost:65424/api/bills/GetBills/' + orgId;
+            billCmb.dataSource.read();
+        }
+
+        $("#bill-input").kendoComboBox({
+            placeholder: "Select bill...",
+            enable: false,
+            dataTextField: "FreeAmount",
+            dataValueField: "Id",
+            autoBind: false,
+            change: onChangeBill,
+            dataSource: {
+                transport: {
+                    read: function (operation) {
+                        $.ajax({
+                            url: url,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function (response) {
+                                operation.success(response);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        function onChangeBill(e) {
+            billId = this.value();
+            freeAmountFrom = this.text();
+
+        }
+
+        $("#org-input2").kendoComboBox({
+            placeholder: "Select organisation...",
+            dataTextField: "Name",
+            dataValueField: "Id",
+            autoBind: false,
+            enable: true,
+            change: onChangeOrg2,
+            dataSource: {
+                type: "GET",
+                transport: {
+                    read: {
+                        url: "http://localhost:65424/api/organisations/GetOrganisations/",
+                    }
+                }
+            }
+        });
+        function onChangeOrg2(e) {
+            var billCmb2 = $("#bill-input2").data("kendoComboBox");
+            billCmb2.enable(true);
+            orgId2 = this.value();
+            url2 = 'http://localhost:65424/api/bills/GetBills/' + orgId2;
+            //billCmb2.dataSource.filter({
+            //    field: 'Id',
+            //    operator: 'neq',
+            //    value: billId
+            //});
+            billCmb2.dataSource.read();
+        }
+
+        $("#bill-input2").kendoComboBox({
+            placeholder: "Select bill...",
+            enable: false,
+            dataTextField: "FreeAmount",
+            dataValueField: "Id",
+            autoBind: false,
+            change: onChangeBill2,
+            dataSource: {
+                transport: {
+                    read: function (operation) {
+                        $.ajax({
+                            url: url2,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function (response) {
+                                operation.success(response);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        function onChangeBill2(e) {
+
+            billId2 = this.value();
+            freeAmountTo = this.text();
+
+        }
+
+        $("#amount").kendoNumericTextBox({
+            format: "c",
+            decimals: 3,
+            change: onChangeAmount,
+        });
+
+        function onChangeAmount(e) {
+
+            amount = this.value();
+
+        }
+
+        $("#send").kendoButton({
+            icon: "redo"
+        });
+
+        $("#send").click(function () {
+            if (amount > freeAmountFrom) {
+                kendo.alert("Not enough money.");
+            }
+            else {
+                //var amountFrom = freeAmountFrom - amount;
+                //var amountTo = freeAmountTo + amount;
+
+                //var billFrom = { Id: billId, Name: data.Name, Amount: data.Amount, BookedAmount: data.BookedAmount, FreeAmount: data.FreeAmount, OrganisationId: data.OrganisationId };
+                //var billTo = { Id: billId2, Name: data.Name, Amount: data.Amount, BookedAmount: data.BookedAmount, FreeAmount: data.FreeAmount, OrganisationId: data.OrganisationId };
+                var operation = { Action: "transfer", Amount: amount, BillFromId: billId, BillToId: billId2 };
+                $.ajax(
+                    {
+                        url: "http://localhost:65424/api/operations/PostOperation/",
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(operation)
+
+
+                    });
+                kendo.alert("Transfer successfull.");
+                $("#org-input").data("kendoComboBox").value("");
+                $("#bill-input").data("kendoComboBox").value("");
+                $("#org-input2").data("kendoComboBox").value("");
+                $("#bill-input2").data("kendoComboBox").value("");
+                $("#amount").data("kendoNumericTextBox").value(null);
+            }
+        });
+
+    });
+
+
+
+
+
+
+</script>

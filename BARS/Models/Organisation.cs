@@ -10,5 +10,7 @@ namespace BARS.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
+
+        public ICollection<Bill> Bills { get; set; }
     }
 }

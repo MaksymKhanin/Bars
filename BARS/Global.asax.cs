@@ -8,6 +8,10 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Data.Entity;
 using BARS.Models;
+using Ninject.Modules;
+using BARS.Util;
+using Ninject;
+using Ninject.Web.Mvc;
 
 namespace BARS
 {
@@ -16,11 +20,17 @@ namespace BARS
         protected void Application_Start()
         {
             Database.SetInitializer(new OrganisationsDbInitializer());
+            OrganisationsContext db = new OrganisationsContext();
+            db.Database.Initialize(true);
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            NinjectModule registrations = new NinjectRegistrations();
+            var kernel = new StandardKernel(registrations);
+            DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
         }
     }
 }

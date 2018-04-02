@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -9,16 +10,16 @@ namespace BARS.Models
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        public int BillIdFrom { get; set; }
-        public int BillIdTo { get; set; }
-        public int OrganisationIdFrom { get; set; }
-        public int OrganisationIdTo { get; set; }
+        public string Action { get; set; }
+        public double Amount { get; set; }
 
-
+        [ForeignKey("BillFrom"), Column(Order = 0)]
+        public int BillFromId { get; set; }
+        [ForeignKey("BillTo"), Column(Order = 1)]
+        public int? BillToId { get; set; }
         public Bill BillFrom { get; set; }
         public Bill BillTo { get; set; }
-        public Organisation OrganisationFrom { get; set; }
-        public Organisation OrganisationTo { get; set; }
+
 
 
     }

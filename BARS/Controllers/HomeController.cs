@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Ninject;
+
 
 namespace BARS.Controllers
 {
@@ -14,27 +16,45 @@ namespace BARS.Controllers
         IRepository<Bill> db2;
         IRepository<Operation> db3;
 
-        public HomeController()
+        public HomeController(IRepository<Organisation> r1, IRepository<Bill> r2, IRepository<Operation> r3)
         {
-            db1 = new OrganisationRepository();
-            db2 = new BillRepository();
-            db3 = new OperationRepository();
+            
+            db1 = r1;
+            db2 = r2;
+            db3 = r3;
+            
         }
         public ActionResult Index()
         {
-            var bills = db2.GetItemsList();
-            ViewBag.Bills = bills;
+            
             return View();
         }
-
-        public ActionResult About()
+        
+        public ActionResult Organisations()
         {
-            ViewBag.Message = "Your application description page.";
+            
 
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult OrganisationBills(int? id)
+        {
+            return View(id);
+        }
+
+        public ActionResult Transfer()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+        public ActionResult Operations()
+        {
+            
+
+            return View();
+        }
+        public ActionResult Reports()
         {
             ViewBag.Message = "Your contact page.";
 

@@ -1,24 +1,72 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿
+@{
+    Layout = null;
 }
 
-<table>
-    <tr>
-        <td><p>Id</p></td>
-        <td><p>Name of a bill</p></td>
-        <td><p>Amount of money</p></td>
-        <td><p>OrganisationId</p></td>
-    </tr>
+<!DOCTYPE html>
 
-    @foreach (var b in ViewBag.Bills)
-    {
-        <tr>
-            <td><p>@b.Id</p></td>
-            <td><p>@b.Name</p></td>
-            <td><p>@b.Amount</p></td>
-            <td><p>@b.OrganisationId</p></td>
-           
-        </tr>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+</head>
+<body>
+    <div id="header-front">
+        <ul class="ul-front">
+            <li class="li-front">@Html.ActionLink("Организации", "Organisations", "Home", new { @class = "my-class" })</li>
+            <li class="li-front">@Html.ActionLink("Перевести деньги", "Transfer", "Home", new { @class = "my-class" })</li>
+            <li class="li-front">@Html.ActionLink("Операции", "Operations", "Home", new { @class = "my-class" })</li>
+        </ul>
+    </div>
+</body>
+</html>
+<style>
+    html, body {
+        background-image: url(/Content/img/front.png);
+        margin: 0;
+        padding: 0;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
     }
 
-</table>
+    #header-front {
+        width: 100%;
+        height: 50px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .li-front {
+        display: inline-block;
+        margin-left: 35px;
+    }
+
+    .ul-front {
+        float: right;
+        margin-right: 11%
+    }
+
+    a.my-class {
+        color: white;
+        text-decoration: none;
+        font: 11pt sans-serif;
+    }
+
+        a.my-class:hover {
+            border-bottom: 0.5px solid white;
+        }
+    @@media only screen and (max-width: 767px) {
+        .ul-front {
+            
+            margin-right: 5%
+        }
+        .li-front {
+            display: inline-block;
+            margin-left: 20px;
+        }
+    }
+</style>

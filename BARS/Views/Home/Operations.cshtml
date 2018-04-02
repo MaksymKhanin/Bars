@@ -1,0 +1,133 @@
+﻿
+<br>
+<h2>Operations</h2>
+<br>
+<div id="grid"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.min.js"></script>
+<script>
+    var dataSource = new kendo.data.DataSource({
+
+        transport: {
+            read: {
+                // the remote service url
+                url: "http://localhost:65424/api/operations/GetOperations/",
+                // the request type
+                type: "get",
+                // the data type of the returned result
+                dataType: "json",
+
+
+            },
+            create: {
+                url: "http://localhost:65424/api/operations/PostOperation/",
+                type: "post",
+                dataType: "json",
+                complete: function (e) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                }
+            },
+            update: {
+                url: "http://localhost:65424/api/operations/PutOperation/",
+                type: "put",
+                dataType: "json",
+                complete: function (e) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                }
+            },
+            destroy: {
+                url: "http://localhost:65424/api/operations/DeleteOperation/",
+                type: "delete",
+                dataType: "json"
+            }
+        },
+        batch: false,
+        // describe the result format
+        schema: {
+            model: {
+                id: "Id",
+                fields: {
+                    Id: { editable: false, nullable: true, type: 'number' },
+                    Action: { editable: false, nullable: true, type: 'string' },
+                    Amount: { editable: false, nullable: true, type: 'number' },
+                    BillFromId: { editable: false, nullable: true, type: 'number' },
+                    BillToId: { editable: false, nullable: true, type: 'number' },
+                    BillFromName: { editable: false, nullable: true, type: 'string' },
+                    BillToName: { editable: false, nullable: true, type: 'string' },
+                    OrganisationFromName: { editable: false, nullable: true, type: 'string' },
+                    OrganisationToName: { editable: false, nullable: true, type: 'string' },
+                    Date: { editable: false, nullable: false, type: "date" }
+                }
+            }
+        },
+        pageSize: 9
+    });
+    $('#grid').kendoGrid({
+
+        dataSource: dataSource,
+        sortable: true,
+        filterable: {
+            extra: false,
+            operators: {
+                string: {
+                    contains: "Contains"
+                }
+            },
+            cell: {
+                enabled: false
+            }
+
+        },
+        pageable: {
+            pageSizes: true,
+            alwaysVisible: false
+        },
+
+
+        width: "700px",
+        toolbar: ["excel"],
+        excel: {
+            fileName: "Operations.xlsx"
+            
+        },
+        excelExport: function (e) {
+            var sheet = e.workbook.sheets[0];
+            for (var i = 0; i < sheet.rows.length; i++) {
+                sheet.rows[i].cells.reverse();
+                for (var ci = 0; ci < sheet.rows[i].cells.length; ci++) {
+                    sheet.rows[i].cells[ci].hAlign = "right";
+                }
+            }
+        },
+        columns: [
+            {
+                field: 'Action',
+                title: 'Operation'
+
+            },
+
+            { field: 'Amount', title: 'Amount', format: "{0:c}" },
+            { field: 'BillFromName', title: 'From Bill', width: "100px" },
+            { field: 'BillToName', title: 'To Bill', width: "90px" },
+            { field: 'OrganisationFromName', title: 'From Organisation' },
+            { field: 'OrganisationToName', title: 'To Organisation' },
+            { field: 'Date', title: 'Date/Time', width: "250px", template: "#= kendo.toString(kendo.parseDate(Date), 'dd MMM yyyy HH:mm') #", filterable: { extra: true } }
+
+        ],
+        editable: 'popup',
+        createAt: 'bottom',
+        saveChanges: function (e) {
+            if (!confirm("Are you sure you want to save all changes?")) {
+                e.preventDefault();
+            }
+        },
+    });
+
+
+
+
+
+
+</script>
+
+

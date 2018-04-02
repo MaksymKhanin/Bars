@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -9,14 +11,18 @@ namespace BARS.Models
     {
         private OrganisationsContext db;
 
-        public BillRepository()
+        public BillRepository(OrganisationsContext context)
         {
-            this.db = new OrganisationsContext();
+            this.db = context;
         }
 
+        public IEnumerable<Bill> GetItemsList(int id)
+        {
+            return db.Bills.Include(p => p.Organisation).Where(at => at.OrganisationId == id).ToList();
+        }
         public IEnumerable<Bill> GetItemsList()
         {
-            return db.Bills;
+            return db.Bills.Include(p=>p.Organisation).ToList();
         }
 
         public Bill GetItem(int id)
@@ -65,5 +71,7 @@ namespace BARS.Models
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+       
     }
 }

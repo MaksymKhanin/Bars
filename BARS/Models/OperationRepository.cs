@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -9,14 +11,18 @@ namespace BARS.Models
     {
         private OrganisationsContext db;
 
-        public OperationRepository()
+        public OperationRepository(OrganisationsContext context)
         {
-            this.db = new OrganisationsContext();
+            this.db = context;
         }
 
-        public IEnumerable<Operation> GetItemsList()
+        public IEnumerable<Operation> GetItemsList(int id)
         {
             return db.Operations;
+        }
+        public IEnumerable<Operation> GetItemsList()
+        {
+            return db.Operations.Include(p => p.BillTo.Organisation).Include(p => p.BillFrom.Organisation);
         }
 
         public Operation GetItem(int id)
@@ -27,6 +33,20 @@ namespace BARS.Models
         public void Create(Operation operation)
         {
             db.Operations.Add(operation);
+            db.Entry(operation).State = EntityState.Added;
+
+            if (operation.Action == "transfer")
+            {
+                var billFrom = db.Bills.Find(operation.BillFromId);
+                billFrom.Amount = billFrom.Amount - operation.Amount;
+                db.Entry(billFrom).State = EntityState.Modified;
+
+                var billTo = db.Bills.Find(operation.BillToId);
+                billTo.Amount = billTo.Amount + operation.Amount;
+                db.Entry(billTo).State = EntityState.Modified;
+            }
+
+            db.SaveChanges();
         }
 
         public void Update(Operation operation)
@@ -65,5 +85,8 @@ namespace BARS.Models
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        
+
+       
     }
 }

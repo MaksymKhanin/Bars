@@ -761,6 +761,7 @@ pre code {
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+  width:100%;
 }
 
 .container:before,
@@ -1244,6 +1245,7 @@ pre code {
 @media (min-width: 1200px) {
   .container {
     max-width: 1170px;
+    width:100%;
   }
   .col-lg-1,
   .col-lg-2,
@@ -4146,6 +4148,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .container > .navbar-collapse {
   margin-right: -15px;
   margin-left: -15px;
+  
 }
 
 @media (min-width: 768px) {

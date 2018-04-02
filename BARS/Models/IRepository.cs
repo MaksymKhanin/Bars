@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BARS.Models
 {
-    interface IRepository<T> : IDisposable
+    public interface IRepository<T> : IDisposable
         where T : class
     {
         IEnumerable<T> GetItemsList(); // получение всех объектов
@@ -15,5 +15,6 @@ namespace BARS.Models
         void Update(T item); // обновление объекта
         void Delete(int id); // удаление объекта по id
         void Save();  // сохранение изменений
+        IEnumerable<T> GetItemsList(int id);
     }
 }
