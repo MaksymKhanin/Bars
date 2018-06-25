@@ -158,6 +158,9 @@
         function onChangeBill(e) {
             billId = this.value();
             freeAmountFrom = this.text();
+            var amountBox = $("#amount").data("kendoNumericTextBox");
+            amountBox.enable(true);
+
 
         }
 
@@ -179,6 +182,7 @@
         });
         function onChangeOrg2(e) {
             var billCmb2 = $("#bill-input2").data("kendoComboBox");
+
             billCmb2.enable(true);
             orgId2 = this.value();
             url2 = 'http://localhost:65424/api/bills/GetBills/' + orgId2;
@@ -223,6 +227,7 @@
             format: "c",
             decimals: 3,
             change: onChangeAmount,
+            enable:false
         });
 
         function onChangeAmount(e) {
@@ -242,7 +247,7 @@
             else {
                 //var amountFrom = freeAmountFrom - amount;
                 //var amountTo = freeAmountTo + amount;
-
+     
                 //var billFrom = { Id: billId, Name: data.Name, Amount: data.Amount, BookedAmount: data.BookedAmount, FreeAmount: data.FreeAmount, OrganisationId: data.OrganisationId };
                 //var billTo = { Id: billId2, Name: data.Name, Amount: data.Amount, BookedAmount: data.BookedAmount, FreeAmount: data.FreeAmount, OrganisationId: data.OrganisationId };
                 var operation = { Action: "transfer", Amount: amount, BillFromId: billId, BillToId: billId2 };

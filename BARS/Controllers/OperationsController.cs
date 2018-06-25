@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,12 +12,12 @@ namespace BARS.Controllers
     public class OperationsController : ApiController
     {
 
-        
+
         private readonly IRepository<Operation> db3;
 
-        public OperationsController( IRepository<Operation> r3)
+        public OperationsController(IRepository<Operation> r3)
         {
-           
+
             db3 = r3;
         }
 
@@ -31,7 +32,7 @@ namespace BARS.Controllers
                 var operViewModel = new OperationViewModel
                 {
                     Id = oper.Id,
-                    Date=oper.Date,
+                    Date = oper.Date,
                     Action = oper.Action,
                     Amount = oper.Amount,
                     BillFromId = oper.BillFromId,
@@ -43,7 +44,7 @@ namespace BARS.Controllers
                 };
                 operViewModels.Add(operViewModel);
             }
-
+                
             return operViewModels;
         }
 
@@ -66,9 +67,9 @@ namespace BARS.Controllers
                 Amount = operation.Amount,
                 BillFromId = operation.BillFromId,
                 BillToId = operation.BillToId
-                
+
             };
-            
+
             db3.Create(oper);
             //b3.Save();
         }

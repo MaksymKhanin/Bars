@@ -54,11 +54,6 @@ namespace BARS.Controllers
 
             return View();
         }
-        public ActionResult Reports()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
+        
     }
 }
